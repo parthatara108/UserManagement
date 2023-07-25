@@ -6,7 +6,8 @@ const initialState = {
   status: '',
   totalUsers: null,
   selectedUser: {},
-  error: ''
+  error: '',
+  success: false,
 };
 
 export const fetchUsersAsync = createAsyncThunk(
@@ -35,11 +36,10 @@ export const updateUserAsync = createAsyncThunk(
 
 export const createUserAsync = createAsyncThunk(
   'user/createUser',
-  async ({ user, alert }, { rejectWithValue }) => {
+  async ({ user, alert }) => {
     const response = await createUser(user);
     alert.success("User Created");
     return response.data;
-
   }
 );
 
@@ -80,6 +80,7 @@ export const userSlice = createSlice({
       .addCase(createUserAsync.fulfilled, (state, action) => {
         state.status = 'idle';
         state.userInfo = action.payload;
+        state.error = '';
       })
       .addCase(createUserAsync.rejected, (state, action) => {
         state.status = 'idle';
@@ -91,6 +92,12 @@ export const userSlice = createSlice({
       .addCase(updateUserAsync.fulfilled, (state, action) => {
         state.status = 'idle';
         state.userInfo = action.payload;
+        state.error = '';
+        state.success = true
+      })
+      .addCase(updateUserAsync.rejected, (state, action) => {
+        state.status = 'idle';
+        state.error = action.error.message;
       })
 
   },

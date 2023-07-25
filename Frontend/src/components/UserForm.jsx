@@ -1,26 +1,32 @@
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux'
-import { Navigate, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { Link, Navigate, unstable_HistoryRouter, useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import { useAlert } from 'react-alert';
 import { createUserAsync, fetchUserByIdAsync, updateUserAsync } from '../features/user/userSlice';
 
 const UserForm = () => {
     const selectedUser = useSelector(state => state.user.selectedUser)
     const errorMessage = useSelector(state => state.user.error)
+    const success = useSelector(state => state.user.success)
     const dispatch = useDispatch()
     const params = useParams()
-    const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm();
+    const { register, handleSubmit, setValue, reset, formState: { errors }, resetField } = useForm();
     const alert = useAlert()
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (params.id) {
             dispatch(fetchUserByIdAsync(params.id))
         }
-        // else {
-        //     dispatch(clearSelectedProduct())
-        // }
     }, [dispatch, params.id])
+
+    useEffect(() => {
+        if (errorMessage) {
+            resetField('email')
+            resetField('phone')
+        }
+    }, [errorMessage])
 
     useEffect(() => {
         if (selectedUser && params.id) {
@@ -31,24 +37,26 @@ const UserForm = () => {
         }
     }, [selectedUser, setValue, params.id])
 
-    return (
-        <form noValidate className="space-y-6 px-4 sm:px-0 sm:mx-auto sm:max-w-lg" onSubmit={handleSubmit((data) => {
-            const user = { ...data }
-            user.phone = +user.phone
+    const onSubmit = (data) => {
+        const user = { ...data }
+        user.phone = +user.phone
 
-            if (params.id) {
-                user.id = params.id
-                dispatch(updateUserAsync({ user: user, alert }));
-                reset()
-            }
-            else {
-                dispatch(createUserAsync({ user: user, alert }))
-                reset();
-            }
-        })}>
+        if (params.id) {
+            user.id = params.id
+            dispatch(updateUserAsync({ user: user, alert }))
+        }
+        else {
+            dispatch(createUserAsync({ user: user, alert }))
+        }
+    }
+
+
+    return (
+        <form noValidate className="space-y-6 px-4 sm:px-0 sm:mx-auto sm:max-w-lg" onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6 bg-white p-6">
-                <div className="border-b border-gray-900/10 pb-6">
-                    <h2 className="text-xl font-semibold leading-7 text-gray-900">{params.id ? "Edit Product" : "Add Product"}</h2>
+                <div className="border-b border-gray-900/10 pb-6 flex justify-between items-center">
+                    <h2 className="text-xl font-semibold leading-7 text-gray-900">{params.id ? "Edit User" : "Add User"}</h2>
+                    <Link to={'/'} className=' text-blue-600'>Home</Link>
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
@@ -134,6 +142,6 @@ const UserForm = () => {
             </div>
         </form>
     );
-};
+}
 
 export default UserForm;

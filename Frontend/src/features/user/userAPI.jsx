@@ -43,7 +43,27 @@ export function createUser(user) {
 
 }
 export function updateUser(update) {
-  return axios.patch('/user/' + update.id, update)
+  // return axios.patch('/user/' + update.id, update)
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch('/user/' + update.id, {
+        method: 'PATCH',
+        body: JSON.stringify(update),
+        headers: { 'content-type': 'application/json' },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        resolve({ data });
+      } else {
+        const error = await response.json();
+        reject(error);
+      }
+    } catch (error) {
+      reject(error);
+    }
+
+  })
 }
 export function deleteUser(id) {
   return axios.delete('/user/' + id)
