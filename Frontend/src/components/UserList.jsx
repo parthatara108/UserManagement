@@ -21,6 +21,10 @@ export default function UserList() {
     const sortOptions = [
         { name: 'ASC', sort: 'firstname', order: 'asc' },
         { name: 'DEC', sort: 'firstname', order: 'desc' },
+        { name: 'ASC', sort: 'lastname', order: 'asc' },
+        { name: 'DEC', sort: 'lastname', order: 'desc' },
+        { name: 'ASC', sort: 'email', order: 'asc' },
+        { name: 'DEC', sort: 'email', order: 'desc' },
     ];
 
     const handlePage = (page) => {
@@ -87,15 +91,15 @@ export default function UserList() {
                                     <th scope="col" className="text-center px-6 py-3">
                                         <div className='flex'>
                                             LastName
-                                            <ArrowUpIcon className='w-5 h-5 cursor-pointer' onClick={() => handleSort(sortOptions[0])} />
-                                            <ArrowDownIcon className='w-5 h-5 cursor-pointer' onClick={() => handleSort(sortOptions[1])} />
+                                            <ArrowUpIcon className='w-5 h-5 cursor-pointer' onClick={() => handleSort(sortOptions[2])} />
+                                            <ArrowDownIcon className='w-5 h-5 cursor-pointer' onClick={() => handleSort(sortOptions[3])} />
                                         </div>
                                     </th>
                                     <th scope="col" className="text-center px-6 py-3">
                                         <div className='flex'>
                                             Email
-                                            <ArrowUpIcon className='w-5 h-5 cursor-pointer' onClick={() => handleSort(sortOptions[0])} />
-                                            <ArrowDownIcon className='w-5 h-5 cursor-pointer' onClick={() => handleSort(sortOptions[1])} />
+                                            <ArrowUpIcon className='w-5 h-5 cursor-pointer' onClick={() => handleSort(sortOptions[4])} />
+                                            <ArrowDownIcon className='w-5 h-5 cursor-pointer' onClick={() => handleSort(sortOptions[5])} />
                                         </div>
                                     </th>
                                     <th scope="col" className="text-center px-6 py-3">
